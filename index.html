@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Thiệp Cưới Phuo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef9e2;
+  --text-dark:#2f4a20;
+  --accent:#7fc24c;
+  --accent-dark:#3e7a2a;
+  --gold:#e3b869;
+  --gold-dark:#c9944a;
+  --muted:#5c8a3a;
+  --chrome-bg:rgba(255,255,255,.72);
+  --chrome-border:rgba(127,194,76,.28);
+  --text:#f7fbee;
+  --muted-face:#b6d99a;
+  --panel:rgba(255,255,255,.07);
+  --panel-border:rgba(227,184,105,.25)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;
+  height:100%;
+  font-family:"Inter",sans-serif;
+  color:var(--text-dark);
+  overflow:hidden;
+  background:radial-gradient(circle at top,rgba(255,255,255,.95),transparent 36%),linear-gradient(180deg,#f9fbf3 0%,var(--bg) 100%)
+}
+.ambient-bg{
+  position:fixed;
+  inset:-8%;
+  background-image:url('https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w1600');
+  background-size:cover;
+  background-position:center;
+  filter:blur(34px) saturate(1.05) brightness(1.02);
+  transform:scale(1.15);
+  z-index:0;
+  opacity:.45
+}
+.ambient-bg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 62% 52% at 50% 46%, rgba(238,249,226,.28), rgba(238,249,226,.84) 78%),linear-gradient(180deg, rgba(244,251,235,.50), rgba(238,249,226,.78))
+}
+.loading-screen{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(180deg,#f9fbf3,#eaf3dc);
+  display:grid;
+  place-items:center;
+  z-index:9999;
+  animation:fadeOutLoader 1s ease 2.4s forwards
+}
+.loader{text-align:center;color:var(--accent-dark)}
+.loader h2{
+  font-family:"Cormorant Garamond",serif;
+  font-size:40px;
+  margin:0 0 10px;
+  color:var(--accent-dark)
+}
+.loader p{
+  margin:0;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  font-size:11px;
+  color:var(--gold)
+}
+@keyframes fadeOutLoader{to{opacity:0;visibility:hidden}}
+.floating-petals{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0
+}
+.petal{
+  position:absolute;
+  top:-12%;
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position:center;
+  filter:drop-shadow(0 0 4px rgba(227,184,105,.2));
+  animation:sakuraFall linear infinite;
+  transform-origin:center
+}
+@keyframes sakuraFall{
+  0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}
+  10%{opacity:.85}
+  90%{opacity:.7}
+  100%{transform:translate3d(3vw,112vh,0) rotate(320deg);opacity:0}
+}
+.music-btn,.nav-arrow{
+  position:fixed;
+  z-index:6;
+  border:1px solid var(--chrome-border);
+  background:var(--chrome-bg);
+  color:var(--accent-dark);
+  backdrop-filter:blur(6px);
+  box-shadow:0 8px 22px rgba(62,122,42,.14);
+  cursor:pointer
+}
+.music-btn{
+  top:18px;
+  right:18px;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  font-size:15px;
+  display:grid;
+  place-items:center
+}
+.nav-arrow{
+  top:50%;
+  transform:translateY(-50%);
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  font-size:18px;
+  display:grid;
+  place-items:center
+}
+.nav-arrow.prev{left:4vw}
+.nav-arrow.next{right:4vw}
+.scene{
+  position:relative;
+  z-index:1;
+  height:100dvh;
+  display:grid;
+  place-items:center
+}
+.floor-glow{
+  position:absolute;
+  bottom:8%;
+  width:min(70vw,380px);
+  height:40px;
+  background:radial-gradient(ellipse at center, rgba(227,184,105,.26), transparent 70%);
+  filter:blur(6px);
+  z-index:0
+}
+.stage{
+  position:relative;
+  width:min(78vw,300px);
+  height:min(120vw,460px);
+  perspective:1500px;
+  z-index:1;
+  touch-action:pan-y
+}
+.carousel{
+  position:relative;
+  width:100%;
+  height:100%;
+  transform-style:preserve-3d;
+  transition:transform .85s cubic-bezier(.22,.68,0,1.01);
+  cursor:grab;
+  will-change:transform
+}
+.carousel.dragging{transition:none;cursor:grabbing}
+.face{
+  position:absolute;
+  inset:0;
+  border-radius:26px;
+  overflow:hidden;
+  border:1px solid var(--panel-border);
+  box-shadow:0 30px 70px rgba(0,0,0,.48);
+  background:linear-gradient(165deg, rgba(44,84,41,.70), rgba(22,44,22,.84))
+}
+.face-photo{
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center
+}
+.face-scrim{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(8,11,5,.05) 30%, rgba(8,11,5,.82) 100%)
+}
+.face-content{
+  position:relative;
+  z-index:1;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:24px 18px 28px
+}
+.face-content.center{
+  justify-content:center;
+  align-items:center;
+  text-align:center
+}
+.face-eyebrow{
+  margin:0 0 10px;
+  font-size:10.5px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%
+}
+.face-eyebrow::before,.face-eyebrow::after{
+  content:"";
+  width:12px;
+  height:1px;
+  background:var(--gold-dark)
+}
+.face-title{
+  font-family:"Cormorant Garamond",serif;
+  font-size:30px;
+  line-height:1.15;
+  margin:0 0 8px;
+  color:#fff;
+  text-align:center;
+  width:100%
+}
+.face-text{
+  font-size:13.5px;
+  line-height:1.7;
+  color:var(--muted-face);
+  margin:0;
+  text-align:center;
+  width:100%
+}
+.f1 .face-date{
+  margin-top:16px;
+  font-family:"Cormorant Garamond",serif;
+  font-size:20px;
+  letter-spacing:.1em;
+  color:var(--text)
+}
+.mini-countdown{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:16px;
+  width:100%;
+  max-width:230px
+}
+.mini-countdown .box{
+  text-align:center;
+  padding:8px 4px;
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(227,184,105,.22)
+}
+.mini-countdown strong{
+  display:block;
+  font-family:"Cormorant Garamond",serif;
+  font-size:19px;
+  color:var(--gold)
+}
+.mini-countdown span{
+  font-size:8.5px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted-face)
+}
+.f2 .avatars{
+  display:flex;
+  justify-content:center;
+  margin-bottom:18px
+}
+.f2 .avatars img{
+  width:66px;
+  height:66px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--gold);
+  box-shadow:0 8px 20px rgba(0,0,0,.35)
+}
+.f2 .avatars img:first-child{
+  margin-right:-14px;
+  z-index:1
+}
+.f2 .quote-mark{
+  font-family:"Cormorant Garamond",serif;
+  font-size:40px;
+  color:var(--gold);
+  line-height:.6;
+  margin-bottom:10px;
+  text-align:center
+}
+.f2 .face-text{
+  font-family:"Cormorant Garamond",serif;
+  font-style:italic;
+  font-size:18px;
+  color:var(--text);
+  max-width:220px
+}
+.schedule-list{
+  display:grid;
+  gap:14px;
+  margin-top:6px;
+  width:100%
+}
+.schedule-item{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(227,184,105,.18)
+}
+.schedule-item:last-child{
+  border-bottom:none;
+  padding-bottom:0
+}
+.schedule-time{
+  font-family:"Cormorant Garamond",serif;
+  font-size:20px;
+  color:var(--gold);
+  min-width:54px
+}
+.schedule-label{
+  font-size:13.5px;
+  color:var(--text);
+  flex:1
+}
+.face-form{
+  display:grid;
+  gap:10px;
+  margin-top:4px;
+  width:100%
+}
+.face-form input,.face-form textarea{
+  width:100%;
+  padding:11px 13px;
+  border-radius:12px;
+  border:1px solid rgba(227,184,105,.28);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  font-family:inherit;
+  font-size:13px;
+  outline:none
+}
+.face-form input::placeholder,.face-form textarea::placeholder{color:var(--muted-face)}
+.face-form input:focus,.face-form textarea:focus{
+  border-color:var(--gold);
+  background:rgba(255,255,255,.1)
+}
+.face-form textarea{
+  min-height:56px;
+  resize:none
+}
+.face-form .row-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px
+}
+.face-form button{
+  margin-top:2px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  color:#241b0a;
+  font-family:inherit;
+  font-size:13.5px;
+  font-weight:700;
+  letter-spacing:.02em;
+  cursor:pointer
+}
+.face-form button[disabled]{opacity:.6;cursor:not-allowed}
+.face-status{
+  min-height:16px;
+  font-size:11.5px;
+  text-align:center;
+  color:var(--accent-dark)
+}
+.face-status.error{color:#e79b8a}
+.drag-hint{
+  position:fixed;
+  bottom:108px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:4;
+  font-size:12px;
+  letter-spacing:.1em;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  opacity:1;
+  transition:opacity .6s ease;
+  pointer-events:none
+}
+.drag-hint.hidden{opacity:0}
+.drag-hint .arrow{
+  animation:swayLR 1.8s ease-in-out infinite;
+  display:inline-block;
+  color:var(--gold-dark)
+}
+@keyframes swayLR{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+.nav-dots{
+  position:fixed;
+  bottom:56px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:4;
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  justify-content:center;
+  max-width:86vw
+}
+.nav-dots button{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  border:none;
+  background:rgba(62,122,42,.28);
+  cursor:pointer;
+  padding:0;
+  transition:background .3s ease,transform .3s ease
+}
+.nav-dots button.active{
+  background:var(--gold);
+  transform:scale(1.3)
+}
+.album-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:5px;
+  margin-top:8px;
+  width:100%;
+  max-width:210px;
+}
+.album-grid .album-item{
+  aspect-ratio:1/1.15;
+  border-radius:12px;
+  overflow:hidden;
+  background:#20351c;
+  cursor:pointer;
+  border:1px solid rgba(227,184,105,.22);
+}
+.album-grid .album-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .25s ease;
+}
+.album-grid .album-item:active img,
+.album-grid .album-item:hover img{
+  transform:scale(1.03);
+}
+.img-modal{
+  position:fixed;
+  inset:0;
+  z-index:99998;
+  background:rgba(0,0,0,.82);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+}
+.img-modal.active{display:flex;}
+.img-modal-view{
+  max-width:min(94vw,900px);
+  max-height:84vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+.img-close{
+  position:absolute;
+  top:16px;
+  right:18px;
+  width:42px;
+  height:42px;
+  border:none;
+  border-radius:50%;
+  background:rgba(255,255,255,.94);
+  color:#111;
+  font-size:28px;
+  line-height:1;
+  cursor:pointer;
+  z-index:99999;
+}
+@media (max-width:560px){
+  .stage{
+    width:min(72vw,260px);
+    height:min(108vw,380px);
+  }
+  .face{
+    border-radius:22px;
+  }
+  .face-content{
+    padding:18px 14px 20px;
+  }
+  .face-title{
+    font-size:22px;
+  }
+  .face-text{
+    font-size:12.5px;
+    line-height:1.55;
+  }
+  .f5 .face-content{
+    padding:16px 12px 18px;
+  }
+  .nav-arrow{width:36px;height:36px;font-size:16px}
+  .nav-arrow.prev{left:10px}
+  .nav-arrow.next{right:10px}
+  .album-grid{
+    max-width:195px;
+    gap:4px;
+  }
+  .album-grid .album-item{
+    border-radius:10px;
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  .carousel{transform:none !important}
+  .petal,.floor-glow,.drag-hint{display:none !important}
+}
+</style>
+</head>
+<body>
+<div class="loading-screen" id="loadingScreen">
+  <div class="loader">
+    <h2>Bích Phương &amp; Thiên Phước</h2>
+    <p>Đang mở thiệp cưới...</p>
+  </div>
+</div>
+
+<div class="ambient-bg"></div>
+<div class="floating-petals" id="petals"></div>
+
+<div class="scene">
+  <div class="floor-glow"></div>
+  <div class="stage" id="stage">
+    <div class="carousel" id="carousel">
+
+      <div class="face f1" style="--i:0">
+        <div class="face-photo" style="background-image:url('https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w1000');"></div>
+        <div class="face-scrim"></div>
+        <div class="face-content">
+          <p class="face-eyebrow">Wedding Invitation</p>
+          <h2 class="face-title">Bích Phương<br>&amp; Thiên Phước</h2>
+          <p class="face-date">31 · 12 · 2026</p>
+          <div class="mini-countdown" id="countdown">
+            <div class="box"><strong id="cd-d">00</strong><span>Ngày</span></div>
+            <div class="box"><strong id="cd-h">00</strong><span>Giờ</span></div>
+            <div class="box"><strong id="cd-m">00</strong><span>Phút</span></div>
+            <div class="box"><strong id="cd-s">00</strong><span>Giây</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="face f2" style="--i:1">
+        <div class="face-content center">
+          <div class="avatars">
+            <img src="https://drive.google.com/uc?export=view&id=1woc8toL8Q8Zv-CXdRK5XeN-MYt62CiCi&v=1" alt="Cô dâu" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
+            <img src="https://drive.google.com/uc?export=view&id=1RW6ThSHnsYfvYxUcr8lTy7zlEt4FT2X4&v=1" alt="Chú rể" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
+          </div>
+          <div class="quote-mark">❝</div>
+          <p class="face-text">Hạnh phúc không phải là đích đến, mà là hành trình chúng mình chọn đi cùng nhau, mỗi ngày.</p>
+        </div>
+      </div>
+
+      <div class="face f3" style="--i:2">
+        <div class="face-content">
+          <p class="face-eyebrow">Bích Phương</p>
+          <div style="width:100%;aspect-ratio:4/5;border-radius:18px;overflow:hidden;margin:8px 0 14px;border:1px solid rgba(227,184,105,.25);box-shadow:0 14px 30px rgba(0,0,0,.22);background:#20351c">
+            <img src="https://drive.google.com/uc?export=view&id=14cZFuoonYM2i4PoOpDET6FnmxWokioAn&v=1" alt="Cô dâu" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
+          </div>
+          <h2 class="face-title" style="font-size:24px;">Điềm đạm &amp; dịu dàng</h2>
+          <p class="face-text">Yêu hoa, yêu những điều giản dị và luôn mang lại cảm giác ấm áp cho người bên cạnh.</p>
+        </div>
+      </div>
+
+      <div class="face f4" style="--i:3">
+        <div class="face-content">
+          <p class="face-eyebrow">Thiên Phước</p>
+          <div style="width:100%;aspect-ratio:4/5;border-radius:18px;overflow:hidden;margin:8px 0 14px;border:1px solid rgba(227,184,105,.25);box-shadow:0 14px 30px rgba(0,0,0,.22);background:#20351c">
+            <img src="https://drive.google.com/uc?export=view&id=1BeWziejw_3wrRnNNrsBGZFPFcEvwrv3c&v=1" alt="Chú rể" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
+          </div>
+          <h2 class="face-title" style="font-size:24px;">Kiên định &amp; chân thành</h2>
+          <p class="face-text">Luôn đặt gia đình lên trên hết, sống trách nhiệm và bền bỉ trong mọi điều mình chọn.</p>
+        </div>
+      </div>
+
+      <div class="face f5" style="--i:4">
+        <div class="face-content">
+          <p class="face-eyebrow">Album ảnh</p>
+          <h2 class="face-title" style="font-size:24px;">Khoảnh khắc đẹp</h2>
+          <div class="album-grid">
+            <div class="album-item"><img src="https://lh3.googleusercontent.com/d/1eQckluUle25ieSG9-ax-IvQsVZdEvVqT=w500&v=1" alt="Ảnh cưới 1" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://lh3.googleusercontent.com/d/1Q50SzRZUX5UDMm7s7NzkH6YPyZOOFdZT=w500&v=1" alt="Ảnh cưới 2" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://lh3.googleusercontent.com/d/1Y1FywHYtJZ59tq1zH7rMfkgS9c2cOaMx=w500&v=1" alt="Ảnh cưới 3" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://lh3.googleusercontent.com/d/1PYPbix9cdmiMofhBRmYZIKLvZMTacr-H=w500&v=1" alt="Ảnh cưới 4" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://lh3.googleusercontent.com/d/1I2JfPbCJI7DYuIICN3MxtP3sQ8NiD8rK=w500&v=1" alt="Ảnh cưới 5" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://lh3.googleusercontent.com/d/1YpuAPaTn6ELZEPvmhZ0RS1fGsSz9Y7QN=w500&v=1" alt="Ảnh cưới 6" onclick="openImage(this.src)"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="face f6" style="--i:5">
+        <div class="face-content center">
+          <p class="face-eyebrow">Video cưới</p>
+          <h2 class="face-title" style="font-size:24px;">Thước phim tình yêu</h2>
+          <div id="videoBox" style="width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;position:relative;border:1px solid rgba(227,184,105,.25);background:url('https://img.youtube.com/vi/Y5VoCfbB6As/hqdefault.jpg') center/cover no-repeat;box-shadow:0 14px 30px rgba(0,0,0,.22)">
+            <button id="videoPlayBtn" aria-label="Phát video" style="position:absolute;inset:0;margin:auto;width:72px;height:72px;border:none;border-radius:50%;background:rgba(255,255,255,.95);cursor:pointer;display:grid;place-items:center;box-shadow:0 12px 30px rgba(0,0,0,.35)">▶</button>
+          </div>
+          <p class="face-text" style="margin-top:10px;max-width:220px">Nhấn để xem video cưới, iframe sẽ chỉ tải khi bạn bấm.</p>
+        </div>
+      </div>
+
+      <div class="face f7" style="--i:6">
+        <div class="face-content">
+          <p class="face-eyebrow">Lịch trình &amp; bản đồ</p>
+          <h2 class="face-title" style="font-size:24px;">Ngày vui của chúng mình</h2>
+          <div class="schedule-list">
+            <div class="schedule-item"><span class="schedule-time">08:00</span><span class="schedule-label">Đón khách</span></div>
+            <div class="schedule-item"><span class="schedule-time">09:00</span><span class="schedule-label">Nghi lễ thành hôn</span></div>
+            <div class="schedule-item"><span class="schedule-time">10:00</span><span class="schedule-label">Tiệc cưới &amp; lưu niệm</span></div>
+          </div>
+          <div style="height:12px"></div>
+          <div style="display:flex;justify-content:center;margin-bottom:10px">
+            <iframe title="Google Maps" loading="lazy" src="https://www.google.com/maps?q=11.735306,107.645083&z=16&output=embed" style="width:100%;height:138px;border:0;border-radius:16px;overflow:hidden"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="face f8" style="--i:7">
+        <div class="face-content center">
+          <p class="face-eyebrow">RSVP</p>
+          <h2 class="face-title" style="font-size:24px;">Xác nhận tham dự</h2>
+          <div class="face-form">
+            <input type="text" id="rsvpName" placeholder="Họ và tên" />
+            <div class="row-2">
+              <input type="tel" id="rsvpPhone" placeholder="Số điện thoại" />
+              <input type="number" id="rsvpGuests" placeholder="Số lượng" min="1" />
+            </div>
+            <input type="text" id="rsvpSide" placeholder="Nhà trai / Nhà gái" />
+            <textarea id="rsvpMessage" placeholder="Lời nhắn gửi tới cô dâu chú rể"></textarea>
+            <button type="button" id="rsvpSubmitBtn">Gửi xác nhận</button>
+            <p class="face-status" id="rsvpStatus"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="face f9" style="--i:8">
+        <div class="face-content center">
+          <p class="face-eyebrow">Lời chúc</p>
+          <h2 class="face-title" style="font-size:24px;">Gửi lời chúc</h2>
+          <div class="face-form">
+            <input type="text" id="wishName" placeholder="Họ và tên (không bắt buộc)" />
+            <textarea id="wishMessage" placeholder="Viết lời chúc của bạn..."></textarea>
+            <button type="button" id="wishSubmitBtn">Gửi lời chúc</button>
+            <p class="face-status" id="wishStatus"></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<p class="drag-hint" id="dragHint"><span class="arrow">←</span> Kéo để xoay <span class="arrow">→</span></p>
+<button class="nav-arrow prev" id="prevBtn" aria-label="Trước">‹</button>
+<button class="nav-arrow next" id="nextBtn" aria-label="Sau">›</button>
+
+<div class="nav-dots" id="navDots">
+  <button class="dot active" data-i="0"></button>
+  <button class="dot" data-i="1"></button>
+  <button class="dot" data-i="2"></button>
+  <button class="dot" data-i="3"></button>
+  <button class="dot" data-i="4"></button>
+  <button class="dot" data-i="5"></button>
+  <button class="dot" data-i="6"></button>
+  <button class="dot" data-i="7"></button>
+  <button class="dot" data-i="8"></button>
+</div>
+
+<button class="music-btn" id="musicBtn">♫</button>
+<audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg" /></audio>
+
+<div id="imgModal" class="img-modal" aria-hidden="true">
+  <button id="imgClose" class="img-close" type="button">×</button>
+  <img id="imgModalView" class="img-modal-view" alt="Ảnh phóng to">
+</div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyQRBujDYAfgh5AcQzWjoBfYc0j3bK_p-yLDvxnsIhiPKJdRtNknBRMX78zK50ZdInX6g/exec";
+const FACE_COUNT = 9, STEP = 360 / FACE_COUNT;
+const stage = document.getElementById("stage"), carousel = document.getElementById("carousel"), dragHint = document.getElementById("dragHint");
+const dots = [...document.querySelectorAll(".nav-dots .dot")], prevBtn = document.getElementById("prevBtn"), nextBtn = document.getElementById("nextBtn");
+let radius = 0, angleAccum = 0, currentIndex = 0, isDragging = false, startX = 0, startAngle = 0, hintHidden = false;
+
+function computeRadius(){
+  radius = stage.offsetWidth * 1.40;
+  document.querySelectorAll(".face").forEach(face => {
+    const i = parseFloat(getComputedStyle(face).getPropertyValue("--i")) || 0;
+    face.style.transform = `rotateY(${i * STEP}deg) translateZ(${radius}px)`;
+  });
+}
+function setAngle(deg, withTransition){
+  carousel.style.transition = withTransition ? "transform .85s cubic-bezier(.22,.68,0,1.01)" : "none";
+  carousel.style.transform = `rotateY(${deg}deg)`;
+}
+function updateDots(){ dots.forEach((d,i) => d.classList.toggle("active", i === currentIndex)); }
+function hideHintOnce(){ if(!hintHidden){ hintHidden = true; dragHint.classList.add("hidden"); } }
+function goToIndex(i){
+  const currentMod = ((angleAccum % 360) + 360) % 360;
+  const targetMod = ((-i * STEP) % 360 + 360) % 360;
+  let delta = targetMod - currentMod;
+  if(delta > 180) delta -= 360;
+  if(delta < -180) delta += 360;
+  angleAccum += delta;
+  currentIndex = i;
+  setAngle(angleAccum, true);
+  updateDots();
+  hideHintOnce();
+}
+function step(dir){
+  angleAccum += dir === "next" ? -STEP : STEP;
+  currentIndex = (((Math.round(-angleAccum / STEP)) % FACE_COUNT) + FACE_COUNT) % FACE_COUNT;
+  setAngle(angleAccum, true);
+  updateDots();
+  hideHintOnce();
+}
+const INTERACTIVE = "input, textarea, button, a, select";
+function onPointerDown(e){
+  if (e.target.closest(INTERACTIVE)) return;
+  isDragging = true;
+  startX = e.clientX;
+  startAngle = angleAccum;
+  carousel.classList.add("dragging");
+  stage.setPointerCapture && stage.setPointerCapture(e.pointerId);
+  hideHintOnce();
+}
+function onPointerMove(e){
+  if(!isDragging) return;
+  const deltaX = e.clientX - startX;
+  angleAccum = startAngle + deltaX * 0.35;
+  setAngle(angleAccum, false);
+}
+function onPointerUp(){
+  if(!isDragging) return;
+  isDragging = false;
+  carousel.classList.remove("dragging");
+  angleAccum = Math.round(angleAccum / STEP) * STEP;
+  currentIndex = (((Math.round(-angleAccum / STEP)) % FACE_COUNT) + FACE_COUNT) % FACE_COUNT;
+  setAngle(angleAccum, true);
+  updateDots();
+}
+stage.addEventListener("pointerdown", onPointerDown);
+window.addEventListener("pointermove", onPointerMove);
+window.addEventListener("pointerup", onPointerUp);
+window.addEventListener("pointercancel", onPointerUp);
+prevBtn.addEventListener("click", () => step("prev"));
+nextBtn.addEventListener("click", () => step("next"));
+dots.forEach(d => d.addEventListener("click", () => goToIndex(parseInt(d.dataset.i, 10))));
+window.addEventListener("keydown", e => { if(e.key === "ArrowRight") step("next"); if(e.key === "ArrowLeft") step("prev"); });
+window.addEventListener("resize", computeRadius);
+computeRadius();
+setAngle(0, false);
+
+async function sendToSheet(payload, statusEl, btnEl, successMsg){
+  statusEl.textContent = "Đang gửi...";
+  statusEl.className = "face-status";
+  btnEl.disabled = true;
+  try {
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("Request failed");
+    statusEl.textContent = successMsg;
+    statusEl.className = "face-status";
+    return true;
+  } catch (err) {
+    statusEl.textContent = "Có lỗi, vui lòng thử lại.";
+    statusEl.className = "face-status error";
+    return false;
+  } finally {
+    btnEl.disabled = false;
+  }
+}
+
+document.getElementById("rsvpSubmitBtn").addEventListener("click", async () => {
+  const name = document.getElementById("rsvpName").value.trim();
+  const phone = document.getElementById("rsvpPhone").value.trim();
+  const guests = document.getElementById("rsvpGuests").value.trim();
+  const side = document.getElementById("rsvpSide").value.trim();
+  const message = document.getElementById("rsvpMessage").value.trim();
+  const statusEl = document.getElementById("rsvpStatus");
+  const btnEl = document.getElementById("rsvpSubmitBtn");
+  if(!name || !phone){
+    statusEl.textContent = "Vui lòng nhập họ tên và SĐT.";
+    statusEl.className = "face-status error";
+    return;
+  }
+  const ok = await sendToSheet({ type:"rsvp", name, phone, guests, side, message }, statusEl, btnEl, "Cảm ơn bạn! 💚");
+  if(ok){
+    ["rsvpName","rsvpPhone","rsvpGuests","rsvpSide","rsvpMessage"].forEach(id => document.getElementById(id).value = "");
+  }
+});
+
+document.getElementById("wishSubmitBtn").addEventListener("click", async () => {
+  const name = document.getElementById("wishName").value.trim() || "Ẩn danh";
+  const wish = document.getElementById("wishMessage").value.trim();
+  const statusEl = document.getElementById("wishStatus");
+  const btnEl = document.getElementById("wishSubmitBtn");
+  if(!wish){
+    statusEl.textContent = "Vui lòng viết lời chúc.";
+    statusEl.className = "face-status error";
+    return;
+  }
+  const ok = await sendToSheet({ type:"wish", name, wish }, statusEl, btnEl, "Cảm ơn lời chúc! 💐");
+  if(ok){
+    document.getElementById("wishName").value = "";
+    document.getElementById("wishMessage").value = "";
+  }
+});
+
+const petalsWrap = document.getElementById("petals");
+const petalColors = [{ fill:"#fdfcf6", edge:"#9dc474" },{ fill:"#eef7de", edge:"#6fa53f" },{ fill:"#f7fbee", edge:"#84b855" }];
+function makeFlowerSVG(c){
+  const petal = `<path d="M20 20 C13 16 12 7 20 2 C28 7 27 16 20 20 Z" fill="${c.fill}" stroke="${c.edge}" stroke-width="1.3"/>`;
+  let petals5 = "";
+  for(let i=0;i<5;i++) petals5 += `<g transform="rotate(${i*72} 20 20)">${petal}</g>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">${petals5}<circle cx="20" cy="20" r="3.4" fill="#e3b869"/><circle cx="20" cy="20" r="3.4" fill="none" stroke="#a97536" stroke-width="1"/></svg>`;
+  return "url('data:image/svg+xml;utf8," + encodeURIComponent(svg) + "')";
+}
+for(let i=0;i<16;i++){
+  const p = document.createElement("div");
+  p.className = "petal";
+  const c = petalColors[i % petalColors.length];
+  p.style.backgroundImage = makeFlowerSVG(c);
+  const size = 14 + Math.random()*12;
+  p.style.width = size + "px";
+  p.style.height = size + "px";
+  p.style.left = Math.random()*100 + "vw";
+  p.style.animationDuration = (10 + Math.random()*8) + "s";
+  p.style.animationDelay = (-Math.random()*14) + "s";
+  p.style.transform = `scale(${0.65 + Math.random()*0.9}) rotate(${Math.random()*180}deg)`;
+  p.style.opacity = (0.7 + Math.random()*0.25).toFixed(2);
+  petalsWrap.appendChild(p);
+}
+
+const countdownDate = new Date("2026-12-31T09:00:00");
+const cdD = document.getElementById("cd-d"), cdH = document.getElementById("cd-h"), cdM = document.getElementById("cd-m"), cdS = document.getElementById("cd-s");
+function updateCountdown(){
+  const diff = countdownDate - new Date();
+  const days = Math.max(0, Math.floor(diff / 86400000));
+  const hours = Math.max(0, Math.floor((diff % 86400000) / 3600000));
+  const mins = Math.max(0, Math.floor((diff % 3600000) / 60000));
+  const secs = Math.max(0, Math.floor((diff % 60000) / 1000));
+  cdD.textContent = String(days).padStart(2, "0");
+  cdH.textContent = String(hours).padStart(2, "0");
+  cdM.textContent = String(mins).padStart(2, "0");
+  cdS.textContent = String(secs).padStart(2, "0");
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+const musicBtn = document.getElementById("musicBtn"), bgMusic = document.getElementById("bgMusic");
+let playing = false;
+function startMusic(){
+  if(playing) return;
+  bgMusic.play().then(() => {
+    playing = true;
+    musicBtn.textContent = "❚❚";
+  }).catch(()=>{});
+}
+function toggleMusic(){
+  if(playing){
+    bgMusic.pause();
+    playing = false;
+    musicBtn.textContent = "♫";
+  } else startMusic();
+}
+window.addEventListener("load", startMusic);
+["click","touchstart","scroll","keydown"].forEach(evt => document.addEventListener(evt, startMusic, { once:true, passive:true }));
+musicBtn.addEventListener("click", toggleMusic);
+
+const videoBox = document.getElementById("videoBox");
+const videoPlayBtn = document.getElementById("videoPlayBtn");
+if(videoPlayBtn){
+  videoPlayBtn.addEventListener("click", () => {
+    const iframe = document.createElement("iframe");
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.src = "https://www.youtube.com/embed/Y5VoCfbB6As?autoplay=1&rel=0";
+    iframe.title = "Video cưới";
+    iframe.style.border = "0";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+    videoBox.innerHTML = "";
+    videoBox.appendChild(iframe);
+  });
+}
+
+const imgModal = document.getElementById("imgModal");
+const imgModalView = document.getElementById("imgModalView");
+const imgClose = document.getElementById("imgClose");
+
+function openImage(src){
+  imgModalView.src = src;
+  imgModal.classList.add("active");
+  imgModal.setAttribute("aria-hidden","false");
+}
+
+function closeImage(){
+  imgModal.classList.remove("active");
+  imgModal.setAttribute("aria-hidden","true");
+  imgModalView.src = "";
+}
+
+imgClose.addEventListener("click", closeImage);
+imgModal.addEventListener("click", (e) => {
+  if(e.target === imgModal) closeImage();
+});
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Escape") closeImage();
+});
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    const ls = document.getElementById("loadingScreen");
+    if(ls) ls.style.display = "none";
+  }, 3500);
+});
+</script>
+</body>
+</html>

@@ -20,7 +20,6 @@
   --chrome-border:rgba(127,194,76,.28);
   --text:#f7fbee;
   --muted-face:#b6d99a;
-  --panel:rgba(255,255,255,.07);
   --panel-border:rgba(227,184,105,.25);
   --input-text:#223018;
 }
@@ -42,8 +41,7 @@ html,body{
   filter:blur(18px) saturate(1.05) brightness(1.03);
   transform:scale(1.08);
   z-index:0;
-  opacity:.33;
-  will-change:transform,filter,opacity
+  opacity:.33
 }
 .ambient-bg::after{
   content:"";
@@ -99,7 +97,7 @@ html,body{
   90%{opacity:.7}
   100%{transform:translate3d(3vw,112vh,0) rotate(320deg);opacity:0}
 }
-.music-btn,.nav-arrow{
+.music-btn,.nav-arrow,.share-zalo{
   position:fixed;
   z-index:6;
   border:1px solid var(--chrome-border);
@@ -119,6 +117,19 @@ html,body{
   font-size:15px;
   display:grid;
   place-items:center
+}
+.share-zalo{
+  top:18px;
+  left:18px;
+  height:42px;
+  padding:0 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none
 }
 .nav-arrow{
   top:50%;
@@ -312,18 +323,23 @@ html,body{
   display:grid;
   gap:10px;
   margin-top:4px;
-  width:100%
+  width:100%;
+  position:relative;
+  z-index:5
 }
 .face-form input,.face-form textarea{
   width:100%;
   padding:11px 13px;
   border-radius:12px;
-  border:1px solid rgba(1, 1, 1, 0.18);
-  background:rgba(255, 254, 254, 0.952);
+  border:1px solid rgba(1,1,1,.18);
+  background:rgba(255,254,254,.952);
   color:var(--input-text);
   font-family:inherit;
   font-size:13px;
-  outline:none
+  outline:none;
+  touch-action:manipulation;
+  position:relative;
+  z-index:6
 }
 .face-form input::placeholder,.face-form textarea::placeholder{color:#7d9a70}
 .face-form input:focus,.face-form textarea:focus{
@@ -334,9 +350,12 @@ html,body{
   min-height:56px;
   resize:none
 }
-.face-form .row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.face-form button{
-  margin-top:2px;
+.face-form .row-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px
+}
+.face-form button,.map-link,.share-btn,.album-more-btn{
   padding:12px;
   border:none;
   border-radius:12px;
@@ -347,7 +366,14 @@ html,body{
   font-weight:700;
   letter-spacing:.02em;
   cursor:pointer;
-  touch-action:manipulation
+  touch-action:manipulation;
+  transition:filter .12s ease,opacity .12s ease
+}
+.face-form button:active,.share-btn:active,.map-link:active,.music-btn:active{
+  filter:brightness(.96)
+}
+.nav-arrow:active{
+  filter:brightness(.97)
 }
 .face-form button[disabled]{opacity:.6;cursor:not-allowed}
 .face-status{
@@ -404,13 +430,19 @@ html,body{
   touch-action:manipulation
 }
 .nav-dots button.active{background:var(--gold);transform:scale(1.2)}
+.album-wrap{
+  width:100%;
+  max-width:220px;
+  height:auto;
+  overflow:hidden;
+  padding-right:0;
+  position:relative
+}
 .album-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:5px;
-  margin-top:8px;
-  width:100%;
-  max-width:210px
+  width:100%
 }
 .album-grid .album-item{
   aspect-ratio:1/1.15;
@@ -428,6 +460,70 @@ html,body{
   transition:transform .25s ease
 }
 .album-grid .album-item:active img,.album-grid .album-item:hover img{transform:scale(1.03)}
+.album-tools{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:1
+}
+.album-up-btn{
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:40px;
+  height:40px;
+  border:none;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  color:var(--accent-dark);
+  box-shadow:0 8px 20px rgba(0,0,0,.18);
+  font-size:18px;
+  font-weight:700;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  pointer-events:auto;
+  touch-action:manipulation;
+  transition:filter .12s ease, background .12s ease
+}
+.album-up-btn:active{
+  filter:brightness(.97);
+  background:#fff
+}
+.album-more-btn{
+  width:100%;
+  margin-top:10px;
+  background:transparent;
+  color:var(--gold-dark);
+  font-family:"Cormorant Garamond",serif;
+  font-size:18px;
+  font-weight:600;
+  letter-spacing:.02em;
+  text-align:center;
+  padding:6px 0 0;
+  border:none;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:opacity .12s ease;
+  position:relative;
+  z-index:2
+}
+.album-more-btn:active{opacity:.75}
+.map-box{
+  width:100%;
+  height:260px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(227,184,105,.25);
+  background:rgba(255,255,255,.12);
+  box-shadow:0 14px 30px rgba(0,0,0,.18)
+}
+.map-box iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block
+}
 .img-modal{
   position:fixed;
   inset:0;
@@ -464,6 +560,24 @@ html,body{
   z-index:99999;
   touch-action:manipulation
 }
+.fx-pop{
+  position:fixed;
+  left:0;
+  top:0;
+  width:18px;
+  height:18px;
+  pointer-events:none;
+  z-index:99999;
+  transform:translate(-50%,-50%);
+  animation:fxPop 900ms ease-out forwards
+}
+.fx-heart{background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e45b84' d='M12 21s-7.2-4.4-9.6-8.7C.2 8.7 2 5.4 5.5 5c2-.2 3.4.8 4.5 2 1.1-1.2 2.5-2.2 4.5-2 3.5.4 5.3 3.7 3.1 7.3C19.2 16.6 12 21 12 21z'/%3E%3C/svg%3E") center/contain no-repeat}
+.fx-flower{background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='%23fff6db'%3E%3Cellipse cx='32' cy='14' rx='8' ry='14'/%3E%3Cellipse cx='50' cy='24' rx='8' ry='14' transform='rotate(72 50 24)'/%3E%3Cellipse cx='43' cy='46' rx='8' ry='14' transform='rotate(144 43 46)'/%3E%3Cellipse cx='21' cy='46' rx='8' ry='14' transform='rotate(216 21 46)'/%3E%3Cellipse cx='14' cy='24' rx='8' ry='14' transform='rotate(288 14 24)'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='7' fill='%23e3b869'/%3E%3C/svg%3E") center/contain no-repeat}
+@keyframes fxPop{
+  0%{opacity:0;transform:translate(var(--x),var(--y)) scale(.4)}
+  15%{opacity:1}
+  100%{opacity:0;transform:translate(calc(var(--x) + var(--dx)),calc(var(--y) + var(--dy))) scale(1.35) rotate(18deg)}
+}
 @media (max-width:560px){
   .stage{width:min(72vw,260px);height:min(108vw,380px)}
   .face{border-radius:22px}
@@ -471,13 +585,15 @@ html,body{
   .face-title{font-size:22px;line-height:1.12}
   .face-text{font-size:12.5px;line-height:1.65}
   .face-date{font-size:18px;margin-top:12px}
-  .f5 .face-content{padding:16px 12px 18px}
   .nav-arrow{width:40px;height:40px;font-size:16px}
   .nav-arrow.prev{left:10px}
   .nav-arrow.next{right:10px}
-  .album-grid{max-width:195px;gap:4px}
+  .album-wrap{max-width:205px}
+  .album-grid{gap:4px}
   .album-grid .album-item{border-radius:10px}
   .music-btn{width:40px;height:40px;top:12px;right:12px}
+  .share-zalo{top:12px;left:12px;height:40px}
+  .map-box{height:220px}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
@@ -496,6 +612,9 @@ html,body{
 
 <div class="ambient-bg"></div>
 <div class="floating-petals" id="petals"></div>
+
+<a class="share-zalo" id="shareZaloBtn" href="#" target="_blank" rel="noopener">Zalo ↗</a>
+<button class="music-btn" id="musicBtn" type="button">♫</button>
 
 <div class="scene">
   <div class="floor-glow"></div>
@@ -521,8 +640,8 @@ html,body{
       <div class="face f2" style="--i:1">
         <div class="face-content center">
           <div class="avatars">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" loading="eager" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" loading="eager" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" loading="eager">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" loading="eager">
           </div>
           <div class="quote-mark">❝</div>
           <p class="face-text">Hạnh phúc không phải là đích đến, mà là hành trình chúng mình chọn đi cùng nhau, mỗi ngày.</p>
@@ -533,7 +652,7 @@ html,body{
         <div class="face-content">
           <p class="face-eyebrow">Bích Phương</p>
           <div style="width:100%;aspect-ratio:4/5;border-radius:18px;overflow:hidden;margin:8px 0 14px;border:1px solid rgba(227,184,105,.25);box-shadow:0 14px 30px rgba(0,0,0,.22);background:#20351c">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <h2 class="face-title" style="font-size:24px;">Điềm đạm &amp; dịu dàng</h2>
           <p class="face-text">Yêu hoa, yêu những điều giản dị và luôn mang lại cảm giác ấm áp cho người bên cạnh.</p>
@@ -544,7 +663,7 @@ html,body{
         <div class="face-content">
           <p class="face-eyebrow">Thiên Phước</p>
           <div style="width:100%;aspect-ratio:4/5;border-radius:18px;overflow:hidden;margin:8px 0 14px;border:1px solid rgba(227,184,105,.25);box-shadow:0 14px 30px rgba(0,0,0,.22);background:#20351c">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <h2 class="face-title" style="font-size:24px;">Kiên định &amp; chân thành</h2>
           <p class="face-text">Luôn đặt gia đình lên trên hết, sống trách nhiệm và bền bỉ trong mọi điều mình chọn.</p>
@@ -555,14 +674,24 @@ html,body{
         <div class="face-content">
           <p class="face-eyebrow">Album ảnh</p>
           <h2 class="face-title" style="font-size:24px;">Khoảnh khắc đẹp</h2>
-          <div class="album-grid">
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626276/18-IMG_4903_ohg9i6.jpg" alt="Ảnh cưới 1" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/13-IMG_4870_kva1hn.jpg" alt="Ảnh cưới 2" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/38-IMG_5039_enrn73.jpg" alt="Ảnh cưới 3" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626280/46-IMG_5134_uhnqjm.jpg" alt="Ảnh cưới 4" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626286/60-IMG_5323_favfm5.jpg" alt="Ảnh cưới 5" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626293/67-IMG_5365_cujvf1.jpg" alt="Ảnh cưới 6" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
+          <div class="album-wrap" id="albumWrap">
+            <div class="album-grid" id="albumGrid">
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626276/18-IMG_4903_ohg9i6.jpg" alt="Ảnh cưới 1" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/13-IMG_4870_kva1hn.jpg" alt="Ảnh cưới 2" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/38-IMG_5039_enrn73.jpg" alt="Ảnh cưới 3" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626280/46-IMG_5134_uhnqjm.jpg" alt="Ảnh cưới 4" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626286/60-IMG_5323_favfm5.jpg" alt="Ảnh cưới 5" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626293/67-IMG_5365_cujvf1.jpg" alt="Ảnh cưới 6" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784712559/16-IMG_4886_itql89.jpg" alt="Ảnh cưới 7" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784712561/25-IMG_4960_ooti3l.jpg" alt="Ảnh cưới 8" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784712575/19-IMG_4917_psymzw.jpg" alt="Ảnh cưới 9" loading="lazy" onclick="openImage(this.src)"></div>
+              <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626281/24-IMG_4954_xho0al.jpg" alt="Ảnh cưới 10" loading="lazy" onclick="openImage(this.src)"></div>
+            </div>
+            <div class="album-tools">
+              <button class="album-up-btn" id="albumUpBtn" type="button" aria-label="Lên">↑</button>
+            </div>
           </div>
+          <button class="album-more-btn" id="albumMoreBtn" type="button">Xem thêm &gt;&gt;</button>
         </div>
       </div>
 
@@ -578,21 +707,32 @@ html,body{
 
       <div class="face f7" style="--i:6">
         <div class="face-content">
-          <p class="face-eyebrow">Lịch trình &amp; bản đồ</p>
+          <p class="face-eyebrow">Lịch trình</p>
           <h2 class="face-title" style="font-size:24px;">Ngày vui của chúng mình</h2>
           <div class="schedule-list">
             <div class="schedule-item"><span class="schedule-time">08:00</span><span class="schedule-label">Đón khách</span></div>
             <div class="schedule-item"><span class="schedule-time">09:00</span><span class="schedule-label">Nghi lễ thành hôn</span></div>
             <div class="schedule-item"><span class="schedule-time">10:00</span><span class="schedule-label">Tiệc cưới &amp; lưu niệm</span></div>
           </div>
-          <div style="height:12px"></div>
-          <div style="display:flex;justify-content:center;margin-bottom:10px">
-            <iframe title="Google Maps" loading="lazy" src="https://www.google.com/maps?q=11.735306,107.645083&z=16&output=embed" style="width:100%;height:138px;border:0;border-radius:16px;overflow:hidden"></iframe>
-          </div>
         </div>
       </div>
 
       <div class="face f8" style="--i:7">
+        <div class="face-content center">
+          <p class="face-eyebrow">Bản đồ</p>
+          <h2 class="face-title" style="font-size:24px;">Địa điểm tổ chức</h2>
+          <div style="width:100%;display:grid;gap:10px">
+            <div class="map-box">
+              <iframe title="Google Maps" loading="lazy" src="https://www.google.com/maps?q=11.735306,107.645083&z=16&output=embed"></iframe>
+            </div>
+            <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=11.735306,107.645083" target="_blank" rel="noopener">
+              Mở Google Maps
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="face f9" style="--i:8">
         <div class="face-content center">
           <p class="face-eyebrow">RSVP</p>
           <h2 class="face-title" style="font-size:24px;">Xác nhận tham dự</h2>
@@ -610,7 +750,7 @@ html,body{
         </div>
       </div>
 
-      <div class="face f9" style="--i:8">
+      <div class="face f10" style="--i:9">
         <div class="face-content center">
           <p class="face-eyebrow">Lời chúc</p>
           <h2 class="face-title" style="font-size:24px;">Gửi lời chúc</h2>
@@ -641,9 +781,9 @@ html,body{
   <button class="dot" data-i="6" aria-label="Trang 7" type="button"></button>
   <button class="dot" data-i="7" aria-label="Trang 8" type="button"></button>
   <button class="dot" data-i="8" aria-label="Trang 9" type="button"></button>
+  <button class="dot" data-i="9" aria-label="Trang 10" type="button"></button>
 </div>
 
-<button class="music-btn" id="musicBtn" type="button">♫</button>
 <audio id="bgMusic" loop preload="none"><source src="music.mp3" type="audio/mpeg" /></audio>
 
 <div id="imgModal" class="img-modal" aria-hidden="true">
@@ -653,13 +793,14 @@ html,body{
 
 <script>
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyQRBujDYAfgh5AcQzWjoBfYc0j3bK_p-yLDvxnsIhiPKJdRtNknBRMX78zK50ZdInX6g/exec";
-const FACE_COUNT = 9, STEP = 360 / FACE_COUNT;
+const SHARE_URL = location.href.split("#")[0];
+const FACE_COUNT = 10, STEP = 360 / FACE_COUNT;
 const stage = document.getElementById("stage"), carousel = document.getElementById("carousel"), dragHint = document.getElementById("dragHint");
 const dots = [...document.querySelectorAll(".nav-dots .dot")], prevBtn = document.getElementById("prevBtn"), nextBtn = document.getElementById("nextBtn");
 let radius = 0, angleAccum = 0, currentIndex = 0, isDragging = false, startX = 0, startAngle = 0, hintHidden = false, pointerLocked = false;
 
 function computeRadius(){
-  radius = stage.offsetWidth * 1.40;
+  radius = stage.offsetWidth * 1.60;
   document.querySelectorAll(".face").forEach(face => {
     const i = parseFloat(getComputedStyle(face).getPropertyValue("--i")) || 0;
     face.style.transform = `rotateY(${i * STEP}deg) translateZ(${radius}px)`;
@@ -690,7 +831,7 @@ function step(dir){
   updateDots();
   hideHintOnce();
 }
-const INTERACTIVE = "input, textarea, button, a, select";
+const INTERACTIVE = "input, textarea, button, a, select, .album-wrap, .album-item, iframe, .album-up-btn";
 function onPointerDown(e){
   if (e.target.closest(INTERACTIVE)) return;
   isDragging = true;
@@ -732,6 +873,26 @@ computeRadius();
 setAngle(0, false);
 updateDots();
 
+function popFx(x,y,kind="heart"){
+  const el = document.createElement("div");
+  el.className = `fx-pop ${kind === "flower" ? "fx-flower" : "fx-heart"}`;
+  const dx = (Math.random()*2-1) * 70;
+  const dy = -(60 + Math.random()*90);
+  el.style.setProperty("--x", `${x}px`);
+  el.style.setProperty("--y", `${y}px`);
+  el.style.setProperty("--dx", `${dx}px`);
+  el.style.setProperty("--dy", `${dy}px`);
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 950);
+}
+function burst(kind="heart", count=10){
+  const rect = carousel.getBoundingClientRect();
+  const x = rect.left + rect.width/2;
+  const y = rect.top + rect.height/2;
+  for(let i=0;i<count;i++){
+    setTimeout(() => popFx(x + (Math.random()*40-20), y + (Math.random()*30-15), kind), i*45);
+  }
+}
 async function sendToSheet(payload, statusEl, btnEl, successMsg){
   statusEl.textContent = "Đang gửi...";
   statusEl.className = "face-status";
@@ -745,10 +906,12 @@ async function sendToSheet(payload, statusEl, btnEl, successMsg){
     if (!res.ok) throw new Error("Request failed");
     statusEl.textContent = successMsg;
     statusEl.className = "face-status";
+    burst("flower", 12);
     return true;
   } catch (err) {
     statusEl.textContent = "Có lỗi, vui lòng thử lại.";
     statusEl.className = "face-status error";
+    burst("heart", 6);
     return false;
   } finally {
     btnEl.disabled = false;
@@ -766,6 +929,7 @@ document.getElementById("rsvpSubmitBtn").addEventListener("click", async () => {
   if(!name || !phone){
     statusEl.textContent = "Vui lòng nhập họ tên và SĐT.";
     statusEl.className = "face-status error";
+    burst("heart", 4);
     return;
   }
   const ok = await sendToSheet({ type:"rsvp", name, phone, guests, side, message }, statusEl, btnEl, "Cảm ơn bạn! 💚");
@@ -782,6 +946,7 @@ document.getElementById("wishSubmitBtn").addEventListener("click", async () => {
   if(!wish){
     statusEl.textContent = "Vui lòng viết lời chúc.";
     statusEl.className = "face-status error";
+    burst("heart", 4);
     return;
   }
   const ok = await sendToSheet({ type:"wish", name, wish }, statusEl, btnEl, "Cảm ơn lời chúc! 💐");
@@ -790,6 +955,9 @@ document.getElementById("wishSubmitBtn").addEventListener("click", async () => {
     document.getElementById("wishMessage").value = "";
   }
 });
+
+const shareZaloBtn = document.getElementById("shareZaloBtn");
+shareZaloBtn.href = `https://zalo.me/share/url?url=${encodeURIComponent(SHARE_URL)}&title=${encodeURIComponent("Thiệp cưới Bích Phương & Thiên Phước")}`;
 
 const petalsWrap = document.getElementById("petals");
 const petalColors = [{ fill:"#fdfcf6", edge:"#9dc474" },{ fill:"#eef7de", edge:"#6fa53f" },{ fill:"#f7fbee", edge:"#84b855" }];
@@ -877,7 +1045,6 @@ if(videoPlayBtn){
     iframe.src = "https://www.youtube.com/embed/Y5VoCfbB6As?autoplay=1&rel=0";
     iframe.title = "Video cưới";
     iframe.style.border = "0";
-    iframe.referrerPolicy = "strict-origin-when-cross-origin";
     iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
     iframe.allowFullscreen = true;
     videoBox.innerHTML = "";
@@ -901,6 +1068,30 @@ function closeImage(){
 imgClose.addEventListener("click", closeImage);
 imgModal.addEventListener("click", e => { if(e.target === imgModal) closeImage(); });
 document.addEventListener("keydown", e => { if(e.key === "Escape") closeImage(); });
+
+const albumItems = [...document.querySelectorAll("#albumGrid .album-item")];
+let albumStart = 0;
+const albumStep = 4;
+
+function renderAlbum(){
+  albumItems.forEach((el, idx) => {
+    el.style.display = (idx >= albumStart && idx < albumStart + albumStep) ? "block" : "none";
+  });
+  document.getElementById("albumMoreBtn").style.display = (albumStart + albumStep < albumItems.length) ? "block" : "none";
+  document.getElementById("albumUpBtn").style.display = albumStart > 0 ? "grid" : "none";
+}
+
+document.getElementById("albumMoreBtn").addEventListener("click", () => {
+  albumStart = Math.min(albumStart + albumStep, Math.max(0, albumItems.length - albumStep));
+  renderAlbum();
+});
+
+document.getElementById("albumUpBtn").addEventListener("click", () => {
+  albumStart = Math.max(0, albumStart - albumStep);
+  renderAlbum();
+});
+
+renderAlbum();
 
 window.addEventListener("load", () => {
   setTimeout(() => {

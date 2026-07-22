@@ -10,7 +10,7 @@
 <style>
 :root{
   --bg:#eef9e2;
-  --text-dark:#3a8e0d;
+  --text-dark:#2f6f16;
   --accent:#7fc24c;
   --accent-dark:#3e7a2a;
   --gold:#e3b869;
@@ -21,7 +21,8 @@
   --text:#f7fbee;
   --muted-face:#b6d99a;
   --panel:rgba(255,255,255,.07);
-  --panel-border:rgba(227,184,105,.25)
+  --panel-border:rgba(227,184,105,.25);
+  --input-text:#223018;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
@@ -35,19 +36,20 @@ html,body{
 .ambient-bg{
   position:fixed;
   inset:-8%;
-  background-image:url('https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w1600');
+  background-image:url('https://res.cloudinary.com/smjfhlci/image/upload/v1784626286/60-IMG_5323_favfm5.jpg');
   background-size:cover;
   background-position:center;
-  filter:blur(34px) saturate(1.05) brightness(1.02);
-  transform:scale(1.15);
+  filter:blur(18px) saturate(1.05) brightness(1.03);
+  transform:scale(1.08);
   z-index:0;
-  opacity:.45
+  opacity:.33;
+  will-change:transform,filter,opacity
 }
 .ambient-bg::after{
   content:"";
   position:absolute;
   inset:0;
-  background:radial-gradient(ellipse 62% 52% at 50% 46%, rgba(238,249,226,.28), rgba(238,249,226,.84) 78%),linear-gradient(180deg, rgba(244,251,235,.50), rgba(238,249,226,.78))
+  background:radial-gradient(ellipse 62% 52% at 50% 46%, rgba(238,249,226,.22), rgba(238,249,226,.88) 78%),linear-gradient(180deg, rgba(244,251,235,.42), rgba(238,249,226,.82))
 }
 .loading-screen{
   position:fixed;
@@ -56,7 +58,7 @@ html,body{
   display:grid;
   place-items:center;
   z-index:9999;
-  animation:fadeOutLoader 1s ease 2.4s forwards
+  animation:fadeOutLoader 1s ease 1.35s forwards
 }
 .loader{text-align:center;color:var(--accent-dark)}
 .loader h2{
@@ -88,7 +90,8 @@ html,body{
   background-position:center;
   filter:drop-shadow(0 0 4px rgba(227,184,105,.2));
   animation:sakuraFall linear infinite;
-  transform-origin:center
+  transform-origin:center;
+  will-change:transform,opacity
 }
 @keyframes sakuraFall{
   0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}
@@ -104,13 +107,14 @@ html,body{
   color:var(--accent-dark);
   backdrop-filter:blur(6px);
   box-shadow:0 8px 22px rgba(62,122,42,.14);
-  cursor:pointer
+  cursor:pointer;
+  touch-action:manipulation
 }
 .music-btn{
   top:18px;
   right:18px;
-  width:40px;
-  height:40px;
+  width:42px;
+  height:42px;
   border-radius:50%;
   font-size:15px;
   display:grid;
@@ -119,8 +123,8 @@ html,body{
 .nav-arrow{
   top:50%;
   transform:translateY(-50%);
-  width:42px;
-  height:42px;
+  width:46px;
+  height:46px;
   border-radius:50%;
   font-size:18px;
   display:grid;
@@ -157,7 +161,7 @@ html,body{
   width:100%;
   height:100%;
   transform-style:preserve-3d;
-  transition:transform .85s cubic-bezier(.22,.68,0,1.01);
+  transition:transform .72s cubic-bezier(.22,.68,0,1.01);
   cursor:grab;
   will-change:transform
 }
@@ -193,11 +197,7 @@ html,body{
   text-align:center;
   padding:24px 18px 28px
 }
-.face-content.center{
-  justify-content:center;
-  align-items:center;
-  text-align:center
-}
+.face-content.center{justify-content:center;align-items:center;text-align:center}
 .face-eyebrow{
   margin:0 0 10px;
   font-size:10.5px;
@@ -219,25 +219,26 @@ html,body{
 .face-title{
   font-family:"Cormorant Garamond",serif;
   font-size:30px;
-  line-height:1.15;
-  margin:0 0 8px;
+  line-height:1.1;
+  margin:0 0 10px;
   color:#fff;
   text-align:center;
   width:100%
+}
+.face-date{
+  margin-top:14px;
+  font-family:"Cormorant Garamond",serif;
+  font-size:20px;
+  letter-spacing:.1em;
+  color:var(--text)
 }
 .face-text{
   font-family:"Cormorant Garamond",serif;
   font-style:italic;
   font-size:18px;
+  line-height:1.6;
   color:var(--text);
   max-width:220px
-}
-.f1 .face-date{
-  margin-top:16px;
-  font-family:"Cormorant Garamond",serif;
-  font-size:20px;
-  letter-spacing:.1em;
-  color:var(--text)
 }
 .mini-countdown{
   display:grid;
@@ -266,11 +267,7 @@ html,body{
   letter-spacing:.06em;
   color:var(--muted-face)
 }
-.f2 .avatars{
-  display:flex;
-  justify-content:center;
-  margin-bottom:18px
-}
+.f2 .avatars{display:flex;justify-content:center;margin-bottom:18px}
 .f2 .avatars img{
   width:66px;
   height:66px;
@@ -279,10 +276,7 @@ html,body{
   border:2px solid var(--gold);
   box-shadow:0 8px 20px rgba(0,0,0,.35)
 }
-.f2 .avatars img:first-child{
-  margin-right:-14px;
-  z-index:1
-}
+.f2 .avatars img:first-child{margin-right:-14px;z-index:1}
 .f2 .quote-mark{
   font-family:"Cormorant Garamond",serif;
   font-size:40px;
@@ -291,19 +285,7 @@ html,body{
   margin-bottom:10px;
   text-align:center
 }
-.f2 .face-text{
-  font-family:"Cormorant Garamond",serif;
-  font-style:italic;
-  font-size:18px;
-  color:var(--text);
-  max-width:220px
-}
-.schedule-list{
-  display:grid;
-  gap:14px;
-  margin-top:6px;
-  width:100%
-}
+.schedule-list{display:grid;gap:14px;margin-top:6px;width:100%}
 .schedule-item{
   display:flex;
   align-items:baseline;
@@ -311,10 +293,7 @@ html,body{
   padding-bottom:12px;
   border-bottom:1px solid rgba(227,184,105,.18)
 }
-.schedule-item:last-child{
-  border-bottom:none;
-  padding-bottom:0
-}
+.schedule-item:last-child{border-bottom:none;padding-bottom:0}
 .schedule-time{
   font-family:"Cormorant Garamond",serif;
   font-size:20px;
@@ -324,6 +303,7 @@ html,body{
 .schedule-label{
   font-family:"Cormorant Garamond",serif;
   font-size:13.5px;
+  line-height:1.55;
   color:var(--text);
   flex:1
 }
@@ -338,27 +318,23 @@ html,body{
   width:100%;
   padding:11px 13px;
   border-radius:12px;
-  border:1px solid rgba(1, 1, 1, 0.28);
+  border:1px solid rgba(1, 1, 1, 0.18);
   background:rgba(255, 254, 254, 0.952);
-  color:var(--text);
+  color:var(--input-text);
   font-family:inherit;
   font-size:13px;
   outline:none
 }
-.face-form input::placeholder,.face-form textarea::placeholder{color:var(--muted-face)}
+.face-form input::placeholder,.face-form textarea::placeholder{color:#7d9a70}
 .face-form input:focus,.face-form textarea:focus{
   border-color:var(--gold);
-  background:rgba(255,255,255,.1)
+  background:#fff
 }
 .face-form textarea{
   min-height:56px;
   resize:none
 }
-.face-form .row-2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px
-}
+.face-form .row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .face-form button{
   margin-top:2px;
   padding:12px;
@@ -370,7 +346,8 @@ html,body{
   font-size:13.5px;
   font-weight:700;
   letter-spacing:.02em;
-  cursor:pointer
+  cursor:pointer;
+  touch-action:manipulation
 }
 .face-form button[disabled]{opacity:.6;cursor:not-allowed}
 .face-status{
@@ -416,26 +393,24 @@ html,body{
   max-width:86vw
 }
 .nav-dots button{
-  width:7px;
-  height:7px;
+  width:12px;
+  height:12px;
   border-radius:50%;
   border:none;
   background:rgba(62,122,42,.28);
   cursor:pointer;
   padding:0;
-  transition:background .3s ease,transform .3s ease
+  transition:background .3s ease,transform .3s ease;
+  touch-action:manipulation
 }
-.nav-dots button.active{
-  background:var(--gold);
-  transform:scale(1.3)
-}
+.nav-dots button.active{background:var(--gold);transform:scale(1.2)}
 .album-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:5px;
   margin-top:8px;
   width:100%;
-  max-width:210px;
+  max-width:210px
 }
 .album-grid .album-item{
   aspect-ratio:1/1.15;
@@ -443,19 +418,16 @@ html,body{
   overflow:hidden;
   background:#20351c;
   cursor:pointer;
-  border:1px solid rgba(227,184,105,.22);
+  border:1px solid rgba(227,184,105,.22)
 }
 .album-grid .album-item img{
   width:100%;
   height:100%;
   object-fit:cover;
   display:block;
-  transition:transform .25s ease;
+  transition:transform .25s ease
 }
-.album-grid .album-item:active img,
-.album-grid .album-item:hover img{
-  transform:scale(1.03);
-}
+.album-grid .album-item:active img,.album-grid .album-item:hover img{transform:scale(1.03)}
 .img-modal{
   position:fixed;
   inset:0;
@@ -464,9 +436,9 @@ html,body{
   display:none;
   align-items:center;
   justify-content:center;
-  padding:22px;
+  padding:22px
 }
-.img-modal.active{display:flex;}
+.img-modal.active{display:flex}
 .img-modal-view{
   max-width:min(94vw,900px);
   max-height:84vh;
@@ -474,7 +446,7 @@ html,body{
   height:auto;
   object-fit:contain;
   border-radius:18px;
-  box-shadow:0 20px 60px rgba(0,0,0,.45);
+  box-shadow:0 20px 60px rgba(0,0,0,.45)
 }
 .img-close{
   position:absolute;
@@ -490,38 +462,22 @@ html,body{
   line-height:1;
   cursor:pointer;
   z-index:99999;
+  touch-action:manipulation
 }
 @media (max-width:560px){
-  .stage{
-    width:min(72vw,260px);
-    height:min(108vw,380px);
-  }
-  .face{
-    border-radius:22px;
-  }
-  .face-content{
-    padding:18px 14px 20px;
-  }
-  .face-title{
-    font-size:22px;
-  }
-  .face-text{
-    font-size:12.5px;
-    line-height:1.55;
-  }
-  .f5 .face-content{
-    padding:16px 12px 18px;
-  }
-  .nav-arrow{width:36px;height:36px;font-size:16px}
+  .stage{width:min(72vw,260px);height:min(108vw,380px)}
+  .face{border-radius:22px}
+  .face-content{padding:18px 14px 20px}
+  .face-title{font-size:22px;line-height:1.12}
+  .face-text{font-size:12.5px;line-height:1.65}
+  .face-date{font-size:18px;margin-top:12px}
+  .f5 .face-content{padding:16px 12px 18px}
+  .nav-arrow{width:40px;height:40px;font-size:16px}
   .nav-arrow.prev{left:10px}
   .nav-arrow.next{right:10px}
-  .album-grid{
-    max-width:195px;
-    gap:4px;
-  }
-  .album-grid .album-item{
-    border-radius:10px;
-  }
+  .album-grid{max-width:195px;gap:4px}
+  .album-grid .album-item{border-radius:10px}
+  .music-btn{width:40px;height:40px;top:12px;right:12px}
 }
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
@@ -565,8 +521,8 @@ html,body{
       <div class="face f2" style="--i:1">
         <div class="face-content center">
           <div class="avatars">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" loading="eager" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" loading="eager" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';">
           </div>
           <div class="quote-mark">❝</div>
           <p class="face-text">Hạnh phúc không phải là đích đến, mà là hành trình chúng mình chọn đi cùng nhau, mỗi ngày.</p>
@@ -575,9 +531,9 @@ html,body{
 
       <div class="face f3" style="--i:2">
         <div class="face-content">
-          <p class="face-eyebrow">Bích Phương</p>
+          <p class="face-eyebrow">Bích Phương</p>
           <div style="width:100%;aspect-ratio:4/5;border-radius:18px;overflow:hidden;margin:8px 0 14px;border:1px solid rgba(227,184,105,.25);box-shadow:0 14px 30px rgba(0,0,0,.22);background:#20351c">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626268/5-IMG_4594_eeyy1u.jpg" alt="Cô dâu" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <h2 class="face-title" style="font-size:24px;">Điềm đạm &amp; dịu dàng</h2>
           <p class="face-text">Yêu hoa, yêu những điều giản dị và luôn mang lại cảm giác ấm áp cho người bên cạnh.</p>
@@ -586,9 +542,9 @@ html,body{
 
       <div class="face f4" style="--i:3">
         <div class="face-content">
-          <p class="face-eyebrow">Thiên Phước</p>
+          <p class="face-eyebrow">Thiên Phước</p>
           <div style="width:100%;aspect-ratio:4/5;border-radius:18px;overflow:hidden;margin:8px 0 14px;border:1px solid rgba(227,184,105,.25);box-shadow:0 14px 30px rgba(0,0,0,.22);background:#20351c">
-            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
+            <img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626262/9-IMG_4666_ve791y.jpg" alt="Chú rể" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://lh3.googleusercontent.com/d/1HtTBwgUu3bFi1ccwixW45nQPYaEE96HT=w800&v=1';" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <h2 class="face-title" style="font-size:24px;">Kiên định &amp; chân thành</h2>
           <p class="face-text">Luôn đặt gia đình lên trên hết, sống trách nhiệm và bền bỉ trong mọi điều mình chọn.</p>
@@ -600,12 +556,12 @@ html,body{
           <p class="face-eyebrow">Album ảnh</p>
           <h2 class="face-title" style="font-size:24px;">Khoảnh khắc đẹp</h2>
           <div class="album-grid">
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626276/18-IMG_4903_ohg9i6.jpg" alt="Ảnh cưới 1" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/13-IMG_4870_kva1hn.jpg" alt="Ảnh cưới 2" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/38-IMG_5039_enrn73.jpg" alt="Ảnh cưới 3" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626280/46-IMG_5134_uhnqjm.jpg" alt="Ảnh cưới 4" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626286/60-IMG_5323_favfm5.jpg" alt="Ảnh cưới 5" onclick="openImage(this.src)"></div>
-            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626293/67-IMG_5365_cujvf1.jpg" alt="Ảnh cưới 6" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626276/18-IMG_4903_ohg9i6.jpg" alt="Ảnh cưới 1" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/13-IMG_4870_kva1hn.jpg" alt="Ảnh cưới 2" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626272/38-IMG_5039_enrn73.jpg" alt="Ảnh cưới 3" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626280/46-IMG_5134_uhnqjm.jpg" alt="Ảnh cưới 4" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626286/60-IMG_5323_favfm5.jpg" alt="Ảnh cưới 5" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
+            <div class="album-item"><img src="https://res.cloudinary.com/smjfhlci/image/upload/v1784626293/67-IMG_5365_cujvf1.jpg" alt="Ảnh cưới 6" loading="lazy" decoding="async" onclick="openImage(this.src)"></div>
           </div>
         </div>
       </div>
@@ -615,7 +571,7 @@ html,body{
           <p class="face-eyebrow">Video cưới</p>
           <h2 class="face-title" style="font-size:24px;">Thước phim tình yêu</h2>
           <div id="videoBox" style="width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;position:relative;border:1px solid rgba(227,184,105,.25);background:url('https://img.youtube.com/vi/Y5VoCfbB6As/hqdefault.jpg') center/cover no-repeat;box-shadow:0 14px 30px rgba(0,0,0,.22)">
-            <button id="videoPlayBtn" aria-label="Phát video" style="position:absolute;inset:0;margin:auto;width:72px;height:72px;border:none;border-radius:50%;background:rgba(255,255,255,.95);cursor:pointer;display:grid;place-items:center;box-shadow:0 12px 30px rgba(0,0,0,.35)">▶</button>
+            <button id="videoPlayBtn" aria-label="Phát video" type="button" style="position:absolute;inset:0;margin:auto;width:72px;height:72px;border:none;border-radius:50%;background:rgba(255,255,255,.95);cursor:pointer;display:grid;place-items:center;box-shadow:0 12px 30px rgba(0,0,0,.35);touch-action:manipulation">▶</button>
           </div>
         </div>
       </div>
@@ -672,26 +628,26 @@ html,body{
 </div>
 
 <p class="drag-hint" id="dragHint"><span class="arrow">←</span> Kéo để xoay <span class="arrow">→</span></p>
-<button class="nav-arrow prev" id="prevBtn" aria-label="Trước">‹</button>
-<button class="nav-arrow next" id="nextBtn" aria-label="Sau">›</button>
+<button class="nav-arrow prev" id="prevBtn" aria-label="Trước" type="button">‹</button>
+<button class="nav-arrow next" id="nextBtn" aria-label="Sau" type="button">›</button>
 
 <div class="nav-dots" id="navDots">
-  <button class="dot active" data-i="0"></button>
-  <button class="dot" data-i="1"></button>
-  <button class="dot" data-i="2"></button>
-  <button class="dot" data-i="3"></button>
-  <button class="dot" data-i="4"></button>
-  <button class="dot" data-i="5"></button>
-  <button class="dot" data-i="6"></button>
-  <button class="dot" data-i="7"></button>
-  <button class="dot" data-i="8"></button>
+  <button class="dot active" data-i="0" aria-label="Trang 1" type="button"></button>
+  <button class="dot" data-i="1" aria-label="Trang 2" type="button"></button>
+  <button class="dot" data-i="2" aria-label="Trang 3" type="button"></button>
+  <button class="dot" data-i="3" aria-label="Trang 4" type="button"></button>
+  <button class="dot" data-i="4" aria-label="Trang 5" type="button"></button>
+  <button class="dot" data-i="5" aria-label="Trang 6" type="button"></button>
+  <button class="dot" data-i="6" aria-label="Trang 7" type="button"></button>
+  <button class="dot" data-i="7" aria-label="Trang 8" type="button"></button>
+  <button class="dot" data-i="8" aria-label="Trang 9" type="button"></button>
 </div>
 
-<button class="music-btn" id="musicBtn">♫</button>
-<audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg" /></audio>
+<button class="music-btn" id="musicBtn" type="button">♫</button>
+<audio id="bgMusic" loop preload="none"><source src="music.mp3" type="audio/mpeg" /></audio>
 
 <div id="imgModal" class="img-modal" aria-hidden="true">
-  <button id="imgClose" class="img-close" type="button">×</button>
+  <button id="imgClose" class="img-close" type="button" aria-label="Đóng">×</button>
   <img id="imgModalView" class="img-modal-view" alt="Ảnh phóng to">
 </div>
 
@@ -700,7 +656,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbyQRBujDYAfgh5AcQzWjoBf
 const FACE_COUNT = 9, STEP = 360 / FACE_COUNT;
 const stage = document.getElementById("stage"), carousel = document.getElementById("carousel"), dragHint = document.getElementById("dragHint");
 const dots = [...document.querySelectorAll(".nav-dots .dot")], prevBtn = document.getElementById("prevBtn"), nextBtn = document.getElementById("nextBtn");
-let radius = 0, angleAccum = 0, currentIndex = 0, isDragging = false, startX = 0, startAngle = 0, hintHidden = false;
+let radius = 0, angleAccum = 0, currentIndex = 0, isDragging = false, startX = 0, startAngle = 0, hintHidden = false, pointerLocked = false;
 
 function computeRadius(){
   radius = stage.offsetWidth * 1.40;
@@ -710,7 +666,7 @@ function computeRadius(){
   });
 }
 function setAngle(deg, withTransition){
-  carousel.style.transition = withTransition ? "transform .85s cubic-bezier(.22,.68,0,1.01)" : "none";
+  carousel.style.transition = withTransition ? "transform .72s cubic-bezier(.22,.68,0,1.01)" : "none";
   carousel.style.transform = `rotateY(${deg}deg)`;
 }
 function updateDots(){ dots.forEach((d,i) => d.classList.toggle("active", i === currentIndex)); }
@@ -738,6 +694,7 @@ const INTERACTIVE = "input, textarea, button, a, select";
 function onPointerDown(e){
   if (e.target.closest(INTERACTIVE)) return;
   isDragging = true;
+  pointerLocked = false;
   startX = e.clientX;
   startAngle = angleAccum;
   carousel.classList.add("dragging");
@@ -747,7 +704,10 @@ function onPointerDown(e){
 function onPointerMove(e){
   if(!isDragging) return;
   const deltaX = e.clientX - startX;
-  angleAccum = startAngle + deltaX * 0.35;
+  if(!pointerLocked && Math.abs(deltaX) > 4) pointerLocked = true;
+  if(!pointerLocked) return;
+  const sensitivity = window.innerWidth < 560 ? 0.24 : 0.35;
+  angleAccum = startAngle + deltaX * sensitivity;
   setAngle(angleAccum, false);
 }
 function onPointerUp(){
@@ -770,6 +730,7 @@ window.addEventListener("keydown", e => { if(e.key === "ArrowRight") step("next"
 window.addEventListener("resize", computeRadius);
 computeRadius();
 setAngle(0, false);
+updateDots();
 
 async function sendToSheet(payload, statusEl, btnEl, successMsg){
   statusEl.textContent = "Đang gửi...";
@@ -872,9 +833,18 @@ updateCountdown();
 setInterval(updateCountdown, 1000);
 
 const musicBtn = document.getElementById("musicBtn"), bgMusic = document.getElementById("bgMusic");
-let playing = false;
+let playing = false, musicUnlocked = false;
 function startMusic(){
-  if(playing) return;
+  if(playing || musicUnlocked) return;
+  bgMusic.play().then(() => {
+    playing = true;
+    musicUnlocked = true;
+    musicBtn.textContent = "❚❚";
+  }).catch(()=>{});
+}
+function unlockMusic(){
+  if(musicUnlocked) return;
+  musicUnlocked = true;
   bgMusic.play().then(() => {
     playing = true;
     musicBtn.textContent = "❚❚";
@@ -885,10 +855,16 @@ function toggleMusic(){
     bgMusic.pause();
     playing = false;
     musicBtn.textContent = "♫";
-  } else startMusic();
+  } else {
+    bgMusic.play().then(() => {
+      playing = true;
+      musicUnlocked = true;
+      musicBtn.textContent = "❚❚";
+    }).catch(()=>{});
+  }
 }
 window.addEventListener("load", startMusic);
-["click","touchstart","scroll","keydown"].forEach(evt => document.addEventListener(evt, startMusic, { once:true, passive:true }));
+["click","touchstart","scroll","keydown"].forEach(evt => document.addEventListener(evt, unlockMusic, { once:true, passive:true }));
 musicBtn.addEventListener("click", toggleMusic);
 
 const videoBox = document.getElementById("videoBox");
@@ -912,32 +888,25 @@ if(videoPlayBtn){
 const imgModal = document.getElementById("imgModal");
 const imgModalView = document.getElementById("imgModalView");
 const imgClose = document.getElementById("imgClose");
-
 function openImage(src){
   imgModalView.src = src;
   imgModal.classList.add("active");
   imgModal.setAttribute("aria-hidden","false");
 }
-
 function closeImage(){
   imgModal.classList.remove("active");
   imgModal.setAttribute("aria-hidden","true");
   imgModalView.src = "";
 }
-
 imgClose.addEventListener("click", closeImage);
-imgModal.addEventListener("click", (e) => {
-  if(e.target === imgModal) closeImage();
-});
-document.addEventListener("keydown", (e) => {
-  if(e.key === "Escape") closeImage();
-});
+imgModal.addEventListener("click", e => { if(e.target === imgModal) closeImage(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeImage(); });
 
 window.addEventListener("load", () => {
   setTimeout(() => {
     const ls = document.getElementById("loadingScreen");
     if(ls) ls.style.display = "none";
-  }, 3500);
+  }, 1350);
 });
 </script>
 </body>
